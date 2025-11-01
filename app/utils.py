@@ -3,10 +3,10 @@ from functools import wraps
 
 # Retry decorator for IO/database operations
 def retry_on_exception(attempts=3, wait=1):
-def deco(fn):
-@retry(wait=wait_fixed(wait), stop=stop_after_attempt(attempts))
-@wraps(fn)
-def wrapped(*args, **kwargs):
-return fn(*args, **kwargs)
-return wrapped
-return deco
+    def deco(fn):
+        @retry(wait=wait_fixed(wait), stop=stop_after_attempt(attempts))
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            return fn(*args, **kwargs)
+        return wrapped
+    return deco

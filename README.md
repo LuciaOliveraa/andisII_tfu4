@@ -9,6 +9,7 @@ This repository implements a REST API for managing recipes and products using Fl
 - **Valet key** (short-lived JWT tokens for delegated limited access)
 - **Gatekeeper** (authorization middleware enforcing permissions)
 - **(Additional)**: Logging, structured project layout, Docker + docker-compose
+- **External Configuration Store**
 
 ---
 

@@ -47,9 +47,10 @@ def delete_product(product_id):
 
 @bp.route('/', methods=['GET'])
 def list_products():
-    products = Product.q
-
-
+    # return all products
+    products = db.session.query(Product).all()
+    # use schema with many=True to serialize lists
+    return ProductSchema(many=True).dump(products)
 
 
 # from flask import Blueprint, request, jsonify

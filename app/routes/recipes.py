@@ -1,0 +1,58 @@
+from flask import Blueprint, request, jsonify
+recipes_bp = Blueprint('recipes', __name__)
+
+@recipes_bp.route('/', methods=['POST'])
+@rate_limit()
+# @gatekeeper
+@transaction
+def create_recipe():
+    data = request.json
+    recipe = Recipe(name=data['name'], description=data.get('description'))
+    db.session.add(recipe)
+    db.session.flush()
+    publish_event('recipe_created', {'recipe_id': recipe.id})
+    return jsonify({'message': 'Recipe created', 'id': recipe.id}), 201
+
+@recipes_bp.route('/<int:id>', methods=['PUT'])
+# @gatekeeper
+@transaction
+def edit_recipe(id):
+    recipe = Recipe.query.get_or_404(id)
+    data = request.json
+    recipe.name = data.get('name', recipe.name)
+    recipe.description = data.get('description', recipe.description)
+    db.session.commit()
+    return jsonify({'message': 'Recipe updated'})
+
+@recipes_bp.route('/<int:id>', methods=['DELETE'])
+# @gatekeeper
+@transaction
+def delete_recipe(id):
+    recipe = Recipe.query.get_or_404(id)
+    db.session.delete(recipe)
+    db.session.commit()
+    publish_event('recipe_deleted', {'recipe_id': id})
+    return jsonify({'message': 'Recipe deleted'})
+
+@recipes_bp.route('/<int:id>/products', methods=['POST'])
+@transaction
+def add_product_to_recipe(id):
+    data = request.json
+    recipe = Recipe.query.get_or_404(id)
+    product = Product.query.get_or_404(data['product_id'])
+    db.session.execute(recipe_products.insert().values(recipe_id=recipe.id, product_id=product.id, quantity=data['quantity']))
+    db.session.commit()
+    publish_event('recipe_product_added', {'recipe_id': recipe.id, 'product_id': product.id})
+    return jsonify({'message': 'Product added to recipe'})
+
+@recipes_bp.route('/', methods=['GET'])
+@cache_get('recipes_list')
+def list_recipes():
+    recipes = Recipe.query.all()
+    return jsonify([{ 'id': r.id, 'name': r.name, 'description': r.description } for r in recipes])
+
+@recipes_bp.route('/<int:id>', methods=['GET'])
+@cache_get('recipe_detail')
+def get_recipe(id):
+    recipe = Recipe.query.get_or_404(id)
+    return jsonify({ 'id': recipe.id, 'name': recipe.name, 'description': recipe.description })

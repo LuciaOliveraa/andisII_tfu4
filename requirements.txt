@@ -1,0 +1,12 @@
+Flask>=2.1
+Flask-SQLAlchemy>=3.0
+psycopg2-binary>=2.9
+Flask-Migrate>=4.0
+Flask-Limiter>=2.6
+redis>=4.0
+python-dotenv>=1.0
+PyJWT>=2.6
+tenacity>=8.2
+marshmallow>=3.19
+marshmallow-sqlalchemy>=0.28
+gunicorn>=20.1

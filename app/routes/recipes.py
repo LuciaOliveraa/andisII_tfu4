@@ -3,6 +3,7 @@ from ..models import Recipe, Product, RecipeItem
 from ..db import db
 from ..schemas import RecipeSchema
 from ..utils import retry_on_exception
+from ..events import events
 
 recipes_bp = Blueprint('recipes', __name__)
 
@@ -16,7 +17,7 @@ def create_recipe():
     recipe = Recipe(name=data['name'], description=data.get('description'))
     db.session.add(recipe)
     db.session.flush()
-    # publish_event('recipe_created', {'recipe_id': recipe.id})
+    events.publish('recipes', {'action': 'created', 'id': recipe.id})
     return jsonify({'message': 'Recipe created', 'id': recipe.id}), 201
 
 @recipes_bp.route('/<int:id>', methods=['PUT'])

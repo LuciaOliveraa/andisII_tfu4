@@ -34,6 +34,18 @@ services:
     ports:
       - "6379:6379"
 
+  worker:
+    build: .
+    command: python -m app.worker
+    depends_on:
+      - web
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/recipes
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=supersecret_dev_key
+
+
   # worker:
   #   build: .
   #   command: python -u worker.py

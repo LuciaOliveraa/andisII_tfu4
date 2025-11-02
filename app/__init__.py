@@ -22,6 +22,9 @@ def create_app():
     from .routes.recipes import recipes_bp
     app.register_blueprint(products_bp, url_prefix='/products')
     app.register_blueprint(recipes_bp, url_prefix='/recipes')
+    # register config endpoint blueprint (exposes non-sensitive app config)
+    from .routes.config import bp as config_bp
+    app.register_blueprint(config_bp, url_prefix='/config')
 
     @app.route("/")
     def index():

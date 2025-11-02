@@ -24,14 +24,24 @@ def create_product():
 @retry_on_exception()
 def edit_product(product_id):
     data = request.get_json() or {}
-    p = db.session.get(Product, product_id)
-    if not p:
-        return {'message': 'Product not found'}, 404
-    for k, v in data.items():
-        setattr(p, k, v)
-    with db.session.begin():
-        db.session.add(p)
-    return product_schema.dump(p)
+
+    # Buscar el producto
+    product = db.session.get(Product, product_id)
+    if not product:
+        return jsonify({'message': 'Product not found'}), 404
+
+    # Actualizar solo los campos válidos
+    valid_fields = {'name', 'description', 'unit'}
+    for key, value in data.items():
+        if key in valid_fields:
+            setattr(product, key, value)
+
+    try:
+        db.session.commit()
+        return product_schema.dump(product), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 
 @bp.route('/<int:product_id>', methods=['DELETE'])

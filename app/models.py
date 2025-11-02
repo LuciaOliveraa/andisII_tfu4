@@ -31,7 +31,8 @@ class RecipeItem(db.Model):
     product_id = Column(Integer, ForeignKey('products.id', ondelete='CASCADE'), nullable=False)
     quantity = Column(Float, nullable=False)
 
-product = relationship('Product')
+    # relationship to Product (was previously defined at module level - moved inside class)
+    product = relationship('Product')
 
 
 class Product(db.Model):

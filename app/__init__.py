@@ -27,13 +27,13 @@ def create_app():
     limiter = Limiter(key_func=get_remote_address, app=app, default_limits=[app.config.get('RATE_LIMITS')])
 
     # Blueprints
-    from .routes.products import bp as products_bp
-    from .routes.recipes import bp as recipes_bp
-    from .routes.valet import bp as valet_bp
+    # from .routes.products import bp as products_bp
+    # from .routes.recipes import recipes_bp as recipes_bp
+    #from .routes.valet import bp as valet_bp
 
-    app.register_blueprint(products_bp, url_prefix='/products')
-    app.register_blueprint(recipes_bp, url_prefix='/recipes')
-    app.register_blueprint(valet_bp, url_prefix='/valet')
+    # app.register_blueprint(products_bp, url_prefix='/products')
+    # app.register_blueprint(recipes_bp, url_prefix='/recipes')
+    #app.register_blueprint(valet_bp, url_prefix='/valet')
 
     # Simple health check
     @app.route('/health')

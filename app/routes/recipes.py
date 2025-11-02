@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
-from models import Recipe, Product, recipe_products
+from ..models import Recipe, Product, RecipeItem
 from ..db import db
+from ..schemas import RecipeSchema
 from ..utils import retry_on_exception
 
 recipes_bp = Blueprint('recipes', __name__)
@@ -48,7 +49,7 @@ def add_product_to_recipe(id):
     data = request.json
     recipe = Recipe.query.get_or_404(id)
     product = Product.query.get_or_404(data['product_id'])
-    db.session.execute(recipe_products.insert().values(recipe_id=recipe.id, product_id=product.id, quantity=data['quantity']))
+    db.session.execute(RecipeItem.insert().values(recipe_id=recipe.id, product_id=product.id, quantity=data['quantity']))
     db.session.commit()
     # publish_event('recipe_product_added', {'recipe_id': recipe.id, 'product_id': product.id})
     return jsonify({'message': 'Product added to recipe'})

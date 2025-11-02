@@ -2,7 +2,7 @@ import jwt
 import datetime
 from flask import current_app, request
 from functools import wraps
-from app.valet import valet
+from app.routes.valet import valet
 
 
 # def create_valet_token(payload: dict, expires_seconds: int = 60):

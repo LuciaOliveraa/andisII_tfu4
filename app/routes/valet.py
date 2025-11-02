@@ -1,9 +1,9 @@
 import time, jwt, os
 from app.config import Config
 from flask import Blueprint, request, jsonify
-from ..valet import valet
+#from ..valet import valet
 
-bp = Blueprint('recipes', __name__)
+bp = Blueprint('valet', __name__)
 
 @bp.route('/valet', methods=['POST'])
 def get_valet_key():

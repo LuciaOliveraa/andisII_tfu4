@@ -8,3 +8,4 @@ class Config:
     RATE_LIMITS = os.getenv('RATE_LIMITS', '10/hour')
     # caching
     CACHE_DEFAULT_TTL = 60 # seconds
+    

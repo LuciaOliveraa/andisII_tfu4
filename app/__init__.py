@@ -25,6 +25,9 @@ def create_app():
     app.register_blueprint(products_bp, url_prefix='/products')
     app.register_blueprint(recipes_bp, url_prefix='/recipes')
 
+    from .routes.valet import bp
+    app.register_blueprint(bp, url_prefix='/valet') #sensitive
+
     # register config endpoint blueprint (exposes non-sensitive app config)
     from .routes.config import bp as config_bp
     app.register_blueprint(config_bp, url_prefix='/config')

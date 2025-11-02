@@ -4,6 +4,10 @@ from ..db import db
 from ..schemas import RecipeSchema
 from ..utils import retry_on_exception
 from ..events import events
+from ..cache import cache
+import json
+from app.auth import gatekeeper
+#from flask import current_app
 
 recipes_bp = Blueprint('recipes', __name__)
 
@@ -18,6 +22,8 @@ def create_recipe():
     db.session.add(recipe)
     db.session.flush()
     events.publish('recipes', {'action': 'created', 'id': recipe.id})
+
+    cache.delete("recipes:list")
     return jsonify({'message': 'Recipe created', 'id': recipe.id}), 201
 
 @recipes_bp.route('/<int:id>', methods=['PUT'])
@@ -57,14 +63,31 @@ def add_product_to_recipe(id):
 
 @recipes_bp.route('/', methods=['GET'])
 @retry_on_exception()
-# @cache_get('recipes_list')
+@gatekeeper('recipes:read')
 def list_recipes():
+    cache_key = "recipes:list"
+    cached_data = cache.get(cache_key)
+
+    if cached_data:
+        #current_app.logger.info("✅ Cache hit: recipes:list")
+        return jsonify(json.loads(cached_data))
+    
     recipes = Recipe.query.all()
-    return jsonify([{ 'id': r.id, 'name': r.name, 'description': r.description } for r in recipes])
+    data = [{'id': r.id, 'name': r.name, 'description': r.description} for r in recipes]
+    cache.set(cache_key, json.dumps(data), ex=60)
+    return jsonify(data)
 
 @recipes_bp.route('/<int:id>', methods=['GET'])
 @retry_on_exception()
-# @cache_get('recipe_detail')
 def get_recipe(id):
+    cache_key = f"recipe:{id}"
+    cached_data = cache.get(cache_key)
+
+    if cached_data:
+        #current_app.logger.info(f"✅ Cache hit: recipe:{id}")
+        return jsonify(json.loads(cached_data))
+    
     recipe = Recipe.query.get_or_404(id)
-    return jsonify({ 'id': recipe.id, 'name': recipe.name, 'description': recipe.description })
+    data = {'id': recipe.id, 'name': recipe.name, 'description': recipe.description}
+    cache.set(cache_key, json.dumps(data), ex=60)
+    return jsonify(data)

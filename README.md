@@ -11,19 +11,6 @@ This repository implements a REST API for managing recipes and products using Fl
 - **(Additional)**: Logging, structured project layout, Docker + docker-compose
 - **External Configuration Store**
 
----
-This repository implements a REST API for managing recipes and products using Flask + PostgreSQL, with Docker Compose for easy deployment.
-
-Key architecture patterns implemented:
-
-- Rate limiting
-- Retry strategy
-- Publisher-Subscriber
-- Cache-aside
-- Valet key
-- Gatekeeper
-- Logging, structured project layout, Docker + docker-compose
-
 ## Project tree
 ```
 flask_recipes_api/

@@ -5,13 +5,13 @@ from flask import Blueprint, request, jsonify
 
 bp = Blueprint('valet', __name__)
 
-@bp.route('/valet', methods=['POST'])
+@bp.route('/token', methods=['POST'])
 def get_valet_key():
     data = request.get_json()
     #user_id = data.get('user_id')
     scopes = data.get('scopes', ['recipes:read'])
     token = valet.generate_valet_key(scopes)
-    return {'token': token}
+    return jsonify({'token': token})
 
 
 class ValetService:

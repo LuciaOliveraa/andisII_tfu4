@@ -9,6 +9,13 @@ import time, logging
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    
+    limiter = Limiter(
+        key_func=get_remote_address,
+        app=app,
+        default_limits=[lambda: app.config["RATE_LIMITS"]],  
+        storage_uri=app.config.get("REDIS_URL")             
+    )
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -18,7 +25,6 @@ def create_app():
 
     from .events import events
     events.init_app(app)
-    limiter = Limiter(key_func=get_remote_address, app=app, default_limits=[app.config.get('RATE_LIMITS')])
 
     from .routes.products import bp as products_bp
     from .routes.recipes import recipes_bp
@@ -34,6 +40,6 @@ def create_app():
 
     @app.route("/")
     def index():
-        return jsonify({"msg": "API Recetas funcionando 🚀"})
+        return jsonify({"msg": "API Recetas funcionando"})
 
     return app

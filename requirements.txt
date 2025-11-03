@@ -10,3 +10,4 @@ tenacity>=8.2
 marshmallow>=3.19
 marshmallow-sqlalchemy>=0.28
 gunicorn>=20.1
+requests>=2.32

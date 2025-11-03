@@ -90,6 +90,8 @@ bash scripts/run_all_demos.sh
 bash scripts/run_all_demos.sh --no-teardown
 ```
 
+curl -sS -L -X GET "http://localhost:8000/config" -H "Accept: application/json"
+
 ## Notes and troubleshooting
 
 - If you run demos on the host (outside the container), activate your virtualenv and run the demo scripts directly:

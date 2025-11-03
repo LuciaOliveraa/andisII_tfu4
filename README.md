@@ -12,30 +12,19 @@ This repository implements a REST API for managing recipes and products using Fl
 - **External Configuration Store**
 
 ---
-
-## Project tree
-
-```
-flask_recipes_api/
-├─ app/
-│  ├─ __init__.py
-│  ├─ config.py
-# Flask Recipes API — TFU 4
-
 This repository implements a REST API for managing recipes and products using Flask + PostgreSQL, with Docker Compose for easy deployment.
 
 Key architecture patterns implemented:
 
-- Rate limiting (Flask-Limiter)
-- Retry strategy (tenacity on DB/IO operations)
-- Publisher-Subscriber (Redis pub/sub for events)
-- Cache-aside (Redis caching for read-heavy endpoints)
-- Valet key (short-lived JWT tokens for delegated limited access)
-- Gatekeeper (authorization middleware enforcing permissions)
+- Rate limiting
+- Retry strategy
+- Publisher-Subscriber
+- Cache-aside
+- Valet key
+- Gatekeeper
 - Logging, structured project layout, Docker + docker-compose
 
 ## Project tree
-
 ```
 flask_recipes_api/
 ├─ app/
@@ -116,7 +105,6 @@ bash scripts/run_all_demos.sh --no-teardown
 
 ## Notes and troubleshooting
 
-- The Docker image installs the Python dependencies listed in `requirements.txt`. The demo runner needs `requests` to be present in the image — `requests` was added to `requirements.txt` so the container build includes it.
 - If you run demos on the host (outside the container), activate your virtualenv and run the demo scripts directly:
 
 ```bash
@@ -127,10 +115,4 @@ python scripts/demo_pub_sub.py
 ```
 
 - If a script fails to import `app`, make sure you run it from the repo root and that `PYTHONPATH` includes the repo root (the runner does this automatically when invoking via the container).
-
-If you'd like, I can also:
-
-- Make the runner executable (chmod +x) and add a Makefile target for convenience
-- Add integration tests that assert the demo outputs
-
 ---

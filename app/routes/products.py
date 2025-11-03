@@ -22,7 +22,6 @@ def create_product():
     if random.random() < 0.5:
         print('  [create_product] simulated transient error, raising...')
         raise Exception('Simulated transient error')
-    # transaction
     with db.session.begin():
         p = Product(**validated)
         db.session.add(p)
@@ -120,41 +119,3 @@ def publish_event():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'published', 'channel': channel}), 201
-
-
-# from flask import Blueprint, request, jsonify
-# from app import db
-# from app.models import Product
-# from app.middleware.rate_limit import rate_limit
-# from app.middleware.gatekeeper import gatekeeper
-
-# products_bp = Blueprint('products', __name__)
-
-# @products_bp.route('/', methods=['POST'])
-# @rate_limit()
-# @gatekeeper
-# def create_product():
-#     data = request.json
-#     product = Product(name=data['name'], unit=data['unit'])
-#     db.session.add(product)
-#     db.session.commit()
-#     return jsonify({'message': 'Product created', 'id': product.id}), 201
-
-# @products_bp.route('/<int:id>', methods=['PUT'])
-# @rate_limit()
-# @gatekeeper
-# def edit_product(id):
-#     product = Product.query.get_or_404(id)
-#     data = request.json
-#     product.name = data.get('name', product.name)
-#     product.unit = data.get('unit', product.unit)
-#     db.session.commit()
-#     return jsonify({'message': 'Product updated'})
-
-# @products_bp.route('/<int:id>', methods=['DELETE'])
-# @gatekeeper
-# def delete_product(id):
-#     product = Product.query.get_or_404(id)
-#     db.session.delete(product)
-#     db.session.commit()
-#     return jsonify({'message': 'Product deleted'})

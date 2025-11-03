@@ -19,10 +19,8 @@ def show_config():
         'SQLALCHEMY_DATABASE_URI': current_app.config.get('SQLALCHEMY_DATABASE_URI'),
     }
 
-    # Mask credentials in SQLALCHEMY_DATABASE_URI (user:pass -> user:****)
     uri = cfg.get('SQLALCHEMY_DATABASE_URI') or ''
     if uri:
         cfg['SQLALCHEMY_DATABASE_URI'] = re.sub(r'://([^:@]+):([^@]+)@', r'://\1:****@', uri)
 
-    # Don't return SECRET_KEY
     return jsonify(cfg)
